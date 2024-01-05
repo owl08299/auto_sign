@@ -7,8 +7,8 @@ def send_notification_email(name, username, action, email, ip, timestamp):
     to_email = email
 
     # 你的郵件帳戶資訊
-    sender_email = 'wtns6991@gmail.com'
-    sender_password = 'uvoa exqq erao gshv'
+    sender_email = 'your_email'
+    sender_password = 'your_password'
 
     # 郵件內容
     subject = f'{name} 自助打卡完成通知 - {username}'

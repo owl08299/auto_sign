@@ -19,8 +19,8 @@ user_schedules = {}
 
 # 使用者，可自行增加
 valid_credentials = {
-    'M610111013': {'password': 'wilson', 'name': '江韋辰', 'email': 'M610111013@tmu.edu.tw'},
-    '123456': {'password': '123456', 'name': '互評人', 'email': 'M610111013@tmu.edu.tw'},
+    'M610111013': {'password': 'wilson', 'name': '江韋辰', 'email': 'your_email'},
+    '123456': {'password': '123456', 'name': '互評人', 'email': 'your_email'},
 }
 
 # 取得時間
