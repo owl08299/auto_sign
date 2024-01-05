@@ -1,0 +1,25 @@
+<!-- set_schedule.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>設定打卡排程</title>
+</head>
+<body>
+    <h1>設定打卡排程</h1>
+    <form action="{{ url_for('set_schedule') }}" method="post">
+        <label for="username">使用者名稱:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">使用者密碼:</label>
+        <input type="text" id="password" name="password" required>
+        <br>
+        <label for="time">排程時間:</label>
+        <input type="time" id="time" name="time" required>
+        <br>
+        <input type="submit" value="設定排程">
+    </form>
+</body>
+</html>

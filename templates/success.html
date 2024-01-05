@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成功簽到/簽退</title>
+</head>
+<body>
+    <div>
+        <!-- 成功簽到/簽退的內容，例如提示信息等 -->
+        <h1>{{ success_message }}</h1>
+        <!-- 提供返回首頁按鈕 -->
+        <button onclick="window.location.href='{{ url_for('index') }}'">返回首頁</button>
+        <h1>返回首頁，或3秒後自動跳轉...</h1>
+    </div>
+
+    <script>
+        // 5秒後自動跳轉到首頁
+        setTimeout(function() 
+        {
+            window.location.href = "{{ url_for('index') }}";}, 3000);
+    </script>
+</body>
+</html>
