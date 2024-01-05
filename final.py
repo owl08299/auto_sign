@@ -1,4 +1,4 @@
-# web.py
+import os
 from flask import Flask, render_template, request, redirect, send_from_directory, url_for
 from flask_migrate import Migrate
 from database import DBHelper
@@ -8,29 +8,26 @@ from celery.schedules import crontab
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from flask_sqlalchemy import SQLAlchemy
-
-import time
-import redis
-import threading
-import schedule
 from datetime import datetime
 
+import time
+import threading
+import schedule
+import csv
+import socket
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.app_context().push()  # 重新推送上下文
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+# app.app_context().push()  # 重新推送上下文
     
 
 # 存放使用者設定的排程
 user_schedules = {}
 
 # 假設這是您的有效憑據
-#valid_credentials = {'username': 'M610111013', 'password': 'wilson'}
 valid_credentials = {
     'M610111013': {'password': 'wilson', 'name': '江韋辰'},
-    '123456': {'password': '123456', 'name': '123456'},
-    # 添加更多使用者
+    '123456': {'password': '123456', 'name': '互評人'},
 }
 
 
@@ -51,12 +48,15 @@ def login():
     #if entered_username == valid_credentials['username'] and entered_password == valid_credentials['password']:
     if entered_username in valid_credentials and entered_password == valid_credentials[entered_username]['password']:
         if action == '簽到':
-            # 在這裡設定使用者排程
+            record_schedule_success(entered_username, action)
             return redirect(url_for('success', success_message='簽到成功'))
+            
         elif action == '簽退':
+            record_schedule_success(entered_username, action)
             return redirect(url_for('success', success_message='簽退成功'))
     else:
         return redirect(url_for('error', error_message='帳號或密碼不正確'))
+    
 
 @app.route('/success')
 def success():
@@ -68,7 +68,7 @@ def error():
     error_message = request.args.get('error_message', '')
     return render_template('success.html', success_message=error_message)
 
-def perform_sign_in(username,password):
+def perform_sign_in(username,password,action):
     # 打卡程式碼
     browser = webdriver.Chrome()
 
@@ -82,15 +82,19 @@ def perform_sign_in(username,password):
         username_input.send_keys(username)
         password_input.send_keys(password)
 
-        login_button = browser.find_element("id", "LoginButton")
-        login_button.click()
+        if action == 'signin':
+            login_button = browser.find_element("id", "LoginButton")
+            login_button.click()
+        elif action == 'signout':
+            logout_button = browser.find_element("id", "logoutbtn")
+            logout_button.click()
 
         time.sleep(3)
         
-        if "成功" in browser.page_source:
-            record = Record(username=username)
-            db.session.add(record)
-            db.session.commit()        
+        # if "成功" in browser.page_source:
+        #     record = Record(username=username)
+        #     db.session.add(record)
+        #     db.session.commit()        
 
         # soup = BeautifulSoup(browser.page_source, 'html.parser')
         # target_text = soup.find('div', {'id': 'showloginmsg'}).find('div', {'class': 'form-group'}).text.strip()
@@ -100,36 +104,57 @@ def perform_sign_in(username,password):
     finally:
         browser.quit()
 
-def job(username, password):
-    # 打卡任務
-    perform_sign_in(username, password)
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
+def record_schedule_success(username, action):
+    # 在這裡添加紀錄排程成功的程式碼
+    file_path = 'schedule_success_records.csv'
     
-@app.route('/records')
-def records():
-    records = Record.query.all()
-    return render_template('records.html', records=records)
+    # 檢查檔案是否存在，如果不存在就寫入標題列
+    if not os.path.exists(file_path):
+        with open(file_path, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["帳號", "打卡別", "IP", "時間"])
+            
+    with open(file_path, 'a', newline='') as file:
+        writer = csv.writer(file)
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        writer.writerow([username, action, get_ip(), current_time])
 
-def schedule_job(username, password, time):
+def job(username, password, action):
+    # 打卡任務
+    perform_sign_in(username, password, action)
+    # 儲存打卡紀錄
+    record_schedule_success(username, action)
+
+
+def schedule_job(username, password, time, action):
     # 設定排程
-    schedule.every().day.at(time).do(job, username, password)
+    schedule.every().day.at(time).do(job, username, password, action)
 
-# 路由：設定排程的頁面
+# 設定排程的頁面
 @app.route('/set_schedule_page')
 def set_schedule_page():
     return render_template('set_schedule.html')
 
-# 路由：處理設定排程的請求
+# 處理設定排程的請求
 @app.route('/set_schedule', methods=['POST'])
 def set_schedule():
     username = request.form.get('username')
     password = request.form.get('password')
     time = request.form.get('time')
+    action = request.form.get('action')
 
     # 將使用者的設定儲存到排程中
-    user_schedules[username] = {'password': password,'time': time}
+    user_schedules[username] = {'password': password,'time': time, 'action': action}
 
-    # 設定打卡任務
-    schedule_job(username, password, time)
+    # 設定打卡任務  
+    schedule_job(username, password, time, action)
 
     return redirect(url_for('index'))
 
@@ -139,13 +164,13 @@ def run_schedule():
         time.sleep(1)
 
 if __name__ == '__main__':
-    db = SQLAlchemy(app)
-    migrate = Migrate(app, db)
+    # db = SQLAlchemy(app)
+    # migrate = Migrate(app, db)
 
-    with app.app_context():
+    # with app.app_context():
      
-        # 創建資料庫表格
-        db.create_all()
+    #     # 創建資料庫表格
+    #     db.create_all()
 
     # 啟動排程執行緒
     schedule_thread = threading.Thread(target=run_schedule)
@@ -153,5 +178,3 @@ if __name__ == '__main__':
 
     # 啟動 Flask 應用程式
     app.run(debug=True)
-
-from models import db, Record  # 將這行移到檔案末尾
