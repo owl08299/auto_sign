@@ -1,31 +1,38 @@
-<!-- set_schedule.html -->
 <!DOCTYPE html>
+<html lang="zh-TW">
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>設定打卡排程</title>
+    <title>設定自助打卡排程</title>
 </head>
 <body>
-    <h1>設定打卡排程</h1>
-    <form action="{{ url_for('set_schedule') }}" method="post">
-        <label for="username">使用者名稱:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">使用者密碼:</label>
-        <input type="text" id="password" name="password" required>
-        <br>
-        <label for="time">排程時間:</label>
-        <input type="time" id="time" name="time" required>
-        <br>
-        <label for="action">選擇操作:</label>
-        <select id="action" name="action" required>
-            <option value="簽到">簽到</option>
-            <option value="簽退">簽退</option>
-        </select>
-        <br>
-        <input type="submit" value="設定排程">
-    </form>
+    <div class="container" style="text-align: center;">
+        <h1>設定打卡排程</h1>
+        <form action="{{ url_for('set_schedule') }}" method="post" onsubmit="showAlert()">
+            <label for="username">使用者名稱:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">使用者密碼:</label>
+            <input type="text" id="password" name="password" required>
+            <br>
+            <label for="time">排程時間:</label>
+            <input type="time" id="time" name="time" required>
+            <br>
+            <label for="action">選擇操作:</label>
+            <select id="action" name="action" required>
+                <option value="簽到">簽到</option>
+                <option value="簽退">簽退</option>
+            </select>
+            <br>
+            <input type="submit" value="設定排程">
+        </form>
+    </div>
 </body>
 </html>
+
+<script>
+    function showAlert() {
+        alert("排程設定完成！");
+    }
+</script>

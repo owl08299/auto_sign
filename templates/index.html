@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
-    <title>自助打卡系統【專任助理/博士後】簽到退入口</title>
+    <title>自助打卡系統【專任助LI/BO士後】簽到退入口</title>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha256-k2/8zcNbxVIh5mnQ52A0r3a6jAgMGxFJFE2707UxGCk= sha512-ZV9KawG2Legkwp3nAlxLIVFudTauWuBpC10uEafMHYL0Sarrz5A7G79kXh5+5+woxQ5HM559XX2UZjMJ36Wplg=="
           crossorigin="anonymous" />
@@ -32,33 +32,33 @@
         <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
                value="/wEdAAWscXrcatmNG7X950VucbTeR1LBKX1P1xh290RQyTesRVwK8/1gnn25OldlRNyIedncqaj6i4HaaYTcyD0yJuxu7Dh1HYweonkE1OhnXiacNxgl6BDXj0BO8XdAgy9tHOt6KRxR28UoIbKL5QzcEawp" />
     </div>
-    <div class="container">
+    <div class="container" style="text-align: center;">
         <div class="page-header  pink accent-2">
             <h3>
-                <img id="img_logo" src="{{ url_for('static', filename='images/OWL.png') }}" style="height:40px;width:40px;border-width:0px;" />&nbsp;助理管理系統
+                <img id="img_logo" src="{{ url_for('static', filename='images/OWL.png') }}" style="height:40px;width:40px;border-width:0px;" />&nbsp;助LI管理系統
 
             </h3>
-            <h4>【助理簽到退】入口</h4>
+            <h4>【助LI簽到退】入口</h4>
         </div>
         <div class="signin_box">
             <div class="content">
                 <div class="login-box">
 
                     <div id="loginfrom" class="form-horizontal">
-                        <!-- 目前時間 -->
+                        <!-- 帳號 -->
                         <div class="form-group">
                             <label for="UserName" id="UserNameLabel" class="control-label col-sm-2">
                                 <i class="fa fa-user fa-2x"></i>
                             </label>
                             <div class="col-sm-10">
                                 <input name="UserName" type="text" id="UserName" class="form-control"
-                                       placeholder="帳號：大寫身分證字號/居留證號" required="" autofocus="" />
-                                <br /><font color="red"><b>帳號：大寫身分證字號/居留證號</b></font>
+                                       placeholder="帳號：學號" required="" autofocus="" />
+                                <br /><font color="red"><b>帳號：學號</b></font>
                             </div>
                         </div>
 
                         <!-- 密碼 -->
-                        <div class="form-group">
+                        <div class="form-group" >
                             <label for="Password" id="PasswordLabel" class="control-label col-sm-2"
                                    placeholder="Password">
                                 <i class="fa fa-key fa-2x"></i>
@@ -66,12 +66,12 @@
                             <div class="col-sm-10">
                                 <input name="Password" type="password" id="Password" class="form-control"
                                        placeholder="Password" />
-                                <br /><font color="red"><b>密碼：預設為大寫身分證字號/居留證號</b></font>
+                                <br /><font color="red"><b>密碼：沒有預設</b></font>
                             </div>
                         </div>
 
                         <!-- 簽到和簽退按鈕 -->
-                        <div class="form-group">
+                        <div class="form-group text-center">
                             <div>
                                 <input type="submit" name="submit_btn" value="簽到" id="LoginButton"
                                 class="btn  btn-default brown lighten-4 col-sm-5 col-xs-5" />
@@ -88,21 +88,22 @@
         <br />
     </div>
 
-    <!-- 頁腳 -->
-    <div class="footer">
+</form>
+
+<div class="form-group" style="text-align: center;">
+    <form action="{{ url_for('set_schedule_page') }}" method="get">
+        <button type="submit">設定打卡排程</button>
+    </form>
+</div>
+
+    <!-- Footer -->
+    <div class="footer" style="text-align: center;">
         <div class="container ">
             <p class="text-muted">
                 自助打卡系統由貓頭鷹公司維護. All rights reserved.
             </p>
         </div>
     </div>
-</form>
-
-<form action="{{ url_for('set_schedule_page') }}" method="get">
-    <button type="submit">設定打卡排程</button>
-</form>
-
-
 
 </body>
 </html>
